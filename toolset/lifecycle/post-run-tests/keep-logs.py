@@ -33,7 +33,7 @@ for folder in os.listdir(path_in):
     for file in files:
       try:
         zip_file.write(os.path.abspath(os.path.join(root, file)), \
-            arcname=file)
+            arcname=os.path.join(root, file))
       except OSError as err:
         print "An OSError occurred while writing to a log zip file for {0}: \
             {1}".format(file, err)
