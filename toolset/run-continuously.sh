@@ -20,7 +20,8 @@ do
   # Note: we tear down first so that we can know the state of the environment
   # regardless of the outcome of prior runs.
   if [ -d "$TFB_REPOPARENT/$TFB_REPONAME" ]; then
-    if [ ! -f $TFB_REPOPARENT/$TFB_REPONAME/benchmark.cfg ]; then
+    echo Preserving benchmark configuration file
+    if [ -f $TFB_REPOPARENT/$TFB_REPONAME/benchmark.cfg ]; then
       cp $TFB_REPOPARENT/$TFB_REPONAME/benchmark.cfg $TFB_REPOPARENT/
     fi
     cp $TFB_REPOPARENT/$TFB_REPONAME/toolset/lifecycle/rebuild-environment.sh $TFB_REPOPARENT/
