@@ -951,9 +951,6 @@ class Benchmarker:
     ############################################################
     def __init__(self, args):
 
-        self.name = '(unspecified, datetime=%s)' % time.strftime("%Y%m%d%H%M%S", time.localtime())
-        self.environment_description = '(unspecified, hostname=%s)' % socket.gethostname()
-
         # Map type strings to their objects
         types = dict()
         types['json'] = JsonTestType()
@@ -1021,8 +1018,8 @@ class Benchmarker:
         if self.results == None:
             self.results = dict()
             self.results['uuid'] = str(uuid.uuid4())
-            self.results['name'] = self.name
-            self.results['environmentDescription'] = self.environment_description
+            self.results['name'] = self.results_name
+            self.results['environmentDescription'] = self.results_environment
             self.results['completionTime'] = None
             self.results['concurrencyLevels'] = self.concurrency_levels
             self.results['queryIntervals'] = self.query_levels
