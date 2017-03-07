@@ -972,7 +972,8 @@ class Benchmarker:
         args['max_concurrency'] = max(args['concurrency_levels'])
 
         self.__dict__.update(args)
-        # pprint(self.__dict__)
+        pprint(self.__dict__)
+        self.doesntexist
 
         self.start_time = time.time()
         self.run_test_timeout_seconds = 7200
