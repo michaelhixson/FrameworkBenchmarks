@@ -1020,7 +1020,7 @@ class Benchmarker:
 
         if self.results == None:
             self.results = dict()
-            self.results['uuid'] = uuid.uuid4()
+            self.results['uuid'] = str(uuid.uuid4())
             self.results['name'] = self.name
             self.results['environmentDescription'] = self.environment_description
             self.results['completionTime'] = None
