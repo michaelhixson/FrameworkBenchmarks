@@ -951,7 +951,7 @@ class Benchmarker:
     ############################################################
     def __init__(self, args):
 
-        self.name = '(unspecified, timestamp=%s)' % self.timestamp
+        self.name = '(unspecified, datetime=%s)' % time.strftime("%Y%m%d%H%M%S", time.localtime())
         self.environment_description = '(unspecified, hostname=%s)' % socket.gethostname()
 
         # Map type strings to their objects
