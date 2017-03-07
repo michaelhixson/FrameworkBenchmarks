@@ -985,6 +985,9 @@ class Benchmarker:
         if self.database_host == None: self.database_host = self.client_host
         if self.database_identity_file == None: self.database_identity_file = self.client_identity_file
 
+        if self.name == None: self.name = '(unspecified, timestamp=%s)' % self.timestamp
+        if self.environment_description == None: self.environment_description = '(unspecified, hostname=%s)' % socket.gethostname()
+
         # Remember root directory
         self.fwroot = setup_util.get_fwroot()
 
@@ -1018,8 +1021,8 @@ class Benchmarker:
         if self.results == None:
             self.results = dict()
             self.results['uuid'] = uuid.uuid4()
-            self.results['name'] = self.name if self.name != None else '(unspecified, timestamp=%s)' % self.timestamp
-            self.results['environmentDescription'] = self.environment_description if self.environment_description != None else '(unspecified, hostname=%s)' % socket.gethostname()
+            self.results['name'] = self.name
+            self.results['environmentDescription'] = self.environment_description
             self.results['completionTime'] = None
             self.results['concurrencyLevels'] = self.concurrency_levels
             self.results['queryIntervals'] = self.query_levels
