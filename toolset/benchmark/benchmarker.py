@@ -951,6 +951,9 @@ class Benchmarker:
     ############################################################
     def __init__(self, args):
 
+        self.name = '(unspecified, timestamp=%s)' % self.timestamp
+        self.environment_description = '(unspecified, hostname=%s)' % socket.gethostname()
+
         # Map type strings to their objects
         types = dict()
         types['json'] = JsonTestType()
@@ -984,9 +987,6 @@ class Benchmarker:
         if self.database_user == None: self.database_user = self.client_user
         if self.database_host == None: self.database_host = self.client_host
         if self.database_identity_file == None: self.database_identity_file = self.client_identity_file
-
-        if self.name == None: self.name = '(unspecified, timestamp=%s)' % self.timestamp
-        if self.environment_description == None: self.environment_description = '(unspecified, hostname=%s)' % socket.gethostname()
 
         # Remember root directory
         self.fwroot = setup_util.get_fwroot()
