@@ -1018,7 +1018,7 @@ class Benchmarker:
         if self.results == None:
             self.results = dict()
             self.results['uuid'] = str(uuid.uuid4())
-            self.results['name'] = self.results_name
+            self.results['name'] = datetime.now().strftime(self.results_name)
             self.results['environmentDescription'] = self.results_environment
             self.results['completionTime'] = None
             self.results['concurrencyLevels'] = self.concurrency_levels
