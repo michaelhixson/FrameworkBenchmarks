@@ -910,7 +910,7 @@ class Benchmarker:
     def __upload_results(self):
         if self.results_upload_uri != None:
             try:
-                requests.post(self.results_upload_uri, headers={ 'Content-Type': 'application/json' }, data=json.dumps(self.results))
+                requests.post(self.results_upload_uri, headers={ 'Content-Type': 'application/json' }, data=json.dumps(self.results, indent=2))
             except (Exception):
                 logging.error("Error uploading results.json")
 
