@@ -1079,28 +1079,29 @@ class QuietOutputStream:
 
     def __init__(self, is_quiet):
         self.is_quiet = is_quiet
+        self.null_out = open(os.devnull, 'w')
 
     def fileno(self):
-        return 1
+        if self.is_quiet:
+            return 1
+        else:
+            return self.null_out.fileno()
 
     def write(self, message):
-        pass
-        #with self.enable():
-        #    sys.stdout.write(message)
+        with self.enable():
+            sys.stdout.write(message)
 
     @contextmanager
     def enable(self):
         if self.is_quiet:
             old_out = sys.stdout
             old_err = sys.stderr
-            null_out = open(os.devnull, 'w')
             try:
-                sys.stdout = null_out
-                sys.stderr = null_out
+                sys.stdout = self.null_out
+                sys.stderr = self.null_out
                 yield
             finally:
                 sys.stdout = old_out
                 sys.stderr = old_err
-                null_out.close()
         else:
             yield
