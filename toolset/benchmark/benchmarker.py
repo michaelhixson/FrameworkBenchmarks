@@ -1089,7 +1089,8 @@ class QuietOutputStream:
 
     def write(self, message):
         with self.enable():
-            sys.stdout.write(message)
+            pass
+            #sys.stdout.write(message)
 
     @contextmanager
     def enable(self):
