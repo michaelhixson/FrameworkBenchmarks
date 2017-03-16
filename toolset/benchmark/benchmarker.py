@@ -308,6 +308,18 @@ class Benchmarker:
     # Private methods
     ##########################################################################################
 
+    @contextmanager
+    def __quiet_mode(self):
+        if self.quiet:
+            old_out = sys.stdout
+            try:
+                sys.stdout = open(os.devnull, 'w')
+                yield
+            finally:
+                sys.stdout = old_out
+        else:
+            yield
+
     ############################################################
     # Gathers all the tests
     ############################################################
@@ -445,8 +457,9 @@ class Benchmarker:
             for test in tests:
                 with open(self.current_benchmark, 'w') as benchmark_resume_file:
                     benchmark_resume_file.write(test.name)
-                if self.__run_test(test) != 0:
-                    error_happened = True
+                with self.__quiet_mode():
+                    if self.__run_test(test) != 0:
+                        error_happened = True
         else:
             logging.debug("Executing __run_tests on Linux")
 
@@ -465,9 +478,10 @@ class Benchmarker:
                     print header("Running Test: %s" % test.name)
                     with open(self.current_benchmark, 'w') as benchmark_resume_file:
                         benchmark_resume_file.write(test.name)
-                    test_process = Process(target=self.__run_test, name="Test Runner (%s)" % test.name, args=(test,))
-                    test_process.start()
-                    test_process.join(self.run_test_timeout_seconds)
+                    with self.__quiet_mode():
+                        test_process = Process(target=self.__run_test, name="Test Runner (%s)" % test.name, args=(test,))
+                        test_process.start()
+                        test_process.join(self.run_test_timeout_seconds)
                     self.__load_results()  # Load intermediate result from child process
                     if(test_process.is_alive()):
                         logging.debug("Child process for {name} is still alive. Terminating.".format(name=test.name))
