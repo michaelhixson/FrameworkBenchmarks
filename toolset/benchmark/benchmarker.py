@@ -1080,6 +1080,9 @@ class QuietOutputStream:
     def __init__(self, is_quiet):
         self.is_quiet = is_quiet
 
+    def fileno(self):
+        return 1
+
     def write(self, message):
         with self.enable():
             sys.stdout.write(message)
