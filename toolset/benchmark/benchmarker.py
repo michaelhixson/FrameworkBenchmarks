@@ -349,7 +349,7 @@ class Benchmarker:
             subprocess.call(['sudo', 'sysctl', '-w', 'net.ipv4.tcp_max_syn_backlog=65535'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
             subprocess.call(['sudo', 'sysctl', '-w', 'net.core.somaxconn=65535'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
             subprocess.call(['sudo', '-s', 'ulimit', '-n', '65535'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
-            subprocess.call(['sudo', 'sysctl', 'net.ipv4.tcp_tw_reuse=1'], stdout=open(os.devnull, 'w'), stderr=subprocess.STDOUT)
+            subprocess.call(['sudo', 'sysctl', 'net.ipv4.tcp_tw_reuse=1'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
             subprocess.call(['sudo', 'sysctl', 'net.ipv4.tcp_tw_recycle=1'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
             subprocess.call(['sudo', 'sysctl', '-w', 'kernel.shmmax=134217728'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
             subprocess.call(['sudo', 'sysctl', '-w', 'kernel.shmall=2097152'], stdout=self.quiet_out, stderr=subprocess.STDOUT)
@@ -1089,13 +1089,11 @@ class QuietOutputStream:
 
     def write(self, message):
         with self.enable():
-            pass
-            #sys.stdout.write(message)
+            sys.stdout.write(message)
 
     @contextmanager
     def enable(self):
         if self.is_quiet:
-            print "yeah"
             old_out = sys.stdout
             old_err = sys.stderr
             try:
@@ -1106,5 +1104,4 @@ class QuietOutputStream:
                 sys.stdout = old_out
                 sys.stderr = old_err
         else:
-            print "nope"
             yield
