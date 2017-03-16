@@ -1083,9 +1083,9 @@ class QuietOutputStream:
 
     def fileno(self):
         if self.is_quiet:
-            return 1
-        else:
             return self.null_out.fileno()
+        else:
+            return 1
 
     def write(self, message):
         with self.enable():
