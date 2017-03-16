@@ -315,11 +315,14 @@ class Benchmarker:
     def __quiet_mode(self):
         if self.quiet:
             old_out = sys.stdout
+            old_err = sys.stderr
             try:
                 sys.stdout = open(os.devnull, 'w')
+                sys.stderr = open(os.devnull, 'w')
                 yield
             finally:
                 sys.stdout = old_out
+                sys.stderr = old_err
         else:
             yield
 
