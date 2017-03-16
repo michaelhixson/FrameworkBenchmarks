@@ -1094,6 +1094,7 @@ class QuietOutputStream:
     @contextmanager
     def enable(self):
         if self.is_quiet:
+            print "yeah"
             old_out = sys.stdout
             old_err = sys.stderr
             try:
@@ -1104,4 +1105,5 @@ class QuietOutputStream:
                 sys.stdout = old_out
                 sys.stderr = old_err
         else:
+            print "nope"
             yield
