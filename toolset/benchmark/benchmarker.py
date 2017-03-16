@@ -1082,10 +1082,8 @@ class QuietOutputStream:
         self.null_out = open(os.devnull, 'w')
 
     def fileno(self):
-        if self.is_quiet:
-            return self.null_out.fileno()
-        else:
-            return 1
+        with self.enable():
+            return sys.stdout.fileno()
 
     def write(self, message):
         with self.enable():
