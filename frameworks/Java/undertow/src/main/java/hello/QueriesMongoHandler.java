@@ -3,23 +3,18 @@ package hello;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
-import com.mongodb.client.model.UpdateOneModel;
-import com.mongodb.client.model.Updates;
-import com.mongodb.client.model.WriteModel;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import java.util.ArrayList;
-import java.util.List;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 
 /**
- * Handles the updates test using MongoDB.
+ * Handles the multiple-query database test using MongoDB.
  */
-final class UpdatesMongoHandler implements HttpHandler {
+final class QueriesMongoHandler implements HttpHandler {
   private final MongoCollection<Document> worldCollection;
 
-  UpdatesMongoHandler(MongoDatabase db) {
+  QueriesMongoHandler(MongoDatabase db) {
     worldCollection = db.getCollection("world");
   }
 
@@ -34,14 +29,6 @@ final class UpdatesMongoHandler implements HttpHandler {
       int randomNumber = ((Number) document.get("randomNumber")).intValue();
       worlds[i] = new World(id, randomNumber);
     }
-    List<WriteModel<Document>> writes = new ArrayList<>(worlds.length);
-    for (World world : worlds) {
-      world.randomNumber = Helper.randomWorld();
-      Bson filter = Filters.eq(world.id);
-      Bson update = Updates.set("randomNumber", world.randomNumber);
-      writes.add(new UpdateOneModel<>(filter, update));
-    }
-    worldCollection.bulkWrite(writes);
     Helper.sendJson(exchange, worlds);
   }
 }
