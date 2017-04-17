@@ -1,5 +1,7 @@
 package hello;
 
+import static hello.Helper.sendHtml;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import java.sql.Connection;
@@ -25,8 +27,7 @@ final class FortunesSqlHandler implements HttpHandler {
     List<Fortune> fortunes = new ArrayList<>();
     try (Connection connection = db.getConnection();
          PreparedStatement statement =
-             connection.prepareStatement(
-                 "SELECT * FROM Fortune");
+             connection.prepareStatement("SELECT * FROM Fortune");
          ResultSet resultSet = statement.executeQuery()) {
       while (resultSet.next()) {
         int id = resultSet.getInt("id");
@@ -36,6 +37,6 @@ final class FortunesSqlHandler implements HttpHandler {
     }
     fortunes.add(new Fortune(0, "Additional fortune added at request time."));
     fortunes.sort(null);
-    Helper.sendHtml(exchange, fortunes, "hello/fortunes.mustache");
+    sendHtml(exchange, fortunes, "hello/fortunes.mustache");
   }
 }

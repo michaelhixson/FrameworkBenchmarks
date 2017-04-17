@@ -26,8 +26,9 @@ final class PlaintextHandler implements HttpHandler {
   private static final ByteBuffer buffer;
   static {
     String message = "Hello, World!";
-    buffer = ByteBuffer.allocateDirect(message.length());
-    buffer.put(message.getBytes(US_ASCII));
+    byte[] messageBytes = message.getBytes(US_ASCII);
+    buffer = ByteBuffer.allocateDirect(messageBytes.length);
+    buffer.put(messageBytes);
     buffer.flip();
   }
 }

@@ -1,5 +1,8 @@
 package hello;
 
+import static hello.Helper.mongoGetInt;
+import static hello.Helper.sendHtml;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import io.undertow.server.HttpHandler;
@@ -22,12 +25,12 @@ final class FortunesMongoHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange exchange) throws Exception {
     List<Fortune> fortunes = new ArrayList<>();
     for (Document document : fortuneCollection.find()) {
-      int id = Helper.mongoGetInt(document, "_id");
+      int id = mongoGetInt(document, "_id");
       String message = document.getString("message");
       fortunes.add(new Fortune(id, message));
     }
     fortunes.add(new Fortune(0, "Additional fortune added at request time."));
     fortunes.sort(null);
-    Helper.sendHtml(exchange, fortunes, "hello/fortunes.mustache");
+    sendHtml(exchange, fortunes, "hello/fortunes.mustache");
   }
 }

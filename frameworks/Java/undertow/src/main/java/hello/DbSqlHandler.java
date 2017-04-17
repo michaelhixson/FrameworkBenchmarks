@@ -1,5 +1,8 @@
 package hello;
 
+import static hello.Helper.randomWorld;
+import static hello.Helper.sendJson;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import java.sql.Connection;
@@ -23,9 +26,8 @@ final class DbSqlHandler implements HttpHandler {
     World world;
     try (Connection connection = db.getConnection();
          PreparedStatement statement =
-             connection.prepareStatement(
-                 "SELECT * FROM World WHERE id = ?")) {
-      statement.setInt(1, Helper.randomWorld());
+             connection.prepareStatement("SELECT * FROM World WHERE id = ?")) {
+      statement.setInt(1, randomWorld());
       try (ResultSet resultSet = statement.executeQuery()) {
         resultSet.next();
         int id = resultSet.getInt("id");
@@ -33,6 +35,6 @@ final class DbSqlHandler implements HttpHandler {
         world = new World(id, randomNumber);
       }
     }
-    Helper.sendJson(exchange, world);
+    sendJson(exchange, world);
   }
 }

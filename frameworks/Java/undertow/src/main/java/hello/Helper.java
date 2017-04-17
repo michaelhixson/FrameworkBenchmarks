@@ -89,10 +89,10 @@ final class Helper {
    */
   static void sendJson(HttpServerExchange exchange, Object value)
       throws JsonProcessingException {
-    byte[] json = objectMapper.writeValueAsBytes(value);
-    ByteBuffer buffer = ByteBuffer.wrap(json);
+    byte[] jsonBytes = objectMapper.writeValueAsBytes(value);
+    ByteBuffer jsonBuffer = ByteBuffer.wrap(jsonBytes);
     exchange.getResponseHeaders().put(CONTENT_TYPE, "application/json");
-    exchange.getResponseSender().send(buffer);
+    exchange.getResponseSender().send(jsonBuffer);
   }
 
   private static final ObjectMapper objectMapper = new ObjectMapper();
@@ -103,12 +103,12 @@ final class Helper {
    *
    * @param exchange the current HTTP exchange
    * @param value the value to be supplied to the Mustache template
-   * @param template the path to the Mustache template
+   * @param templatePath the path to the Mustache template
    */
   static void sendHtml(HttpServerExchange exchange,
                        Object value,
-                       String template) {
-    Mustache mustache = mustacheFactory.compile(template);
+                       String templatePath) {
+    Mustache mustache = mustacheFactory.compile(templatePath);
     StringWriter writer = new StringWriter();
     mustache.execute(writer, value);
     String html = writer.toString();

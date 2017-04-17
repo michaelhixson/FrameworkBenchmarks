@@ -1,5 +1,10 @@
 package hello;
 
+import static hello.Helper.getQueries;
+import static hello.Helper.mongoGetInt;
+import static hello.Helper.randomWorld;
+import static hello.Helper.sendJson;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -25,23 +30,23 @@ final class UpdatesMongoHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
-    int queries = Helper.getQueries(exchange);
+    int queries = getQueries(exchange);
     World[] worlds = new World[queries];
     for (int i = 0; i < worlds.length; i++) {
-      Bson filter = Filters.eq(Helper.randomWorld());
+      Bson filter = Filters.eq(randomWorld());
       Document document = worldCollection.find(filter).first();
-      int id = Helper.mongoGetInt(document, "_id");
-      int randomNumber = Helper.mongoGetInt(document, "randomNumber");
+      int id = mongoGetInt(document, "_id");
+      int randomNumber = mongoGetInt(document, "randomNumber");
       worlds[i] = new World(id, randomNumber);
     }
     List<WriteModel<Document>> writes = new ArrayList<>(worlds.length);
     for (World world : worlds) {
-      world.randomNumber = Helper.randomWorld();
+      world.randomNumber = randomWorld();
       Bson filter = Filters.eq(world.id);
       Bson update = Updates.set("randomNumber", world.randomNumber);
       writes.add(new UpdateOneModel<>(filter, update));
     }
     worldCollection.bulkWrite(writes);
-    Helper.sendJson(exchange, worlds);
+    sendJson(exchange, worlds);
   }
 }

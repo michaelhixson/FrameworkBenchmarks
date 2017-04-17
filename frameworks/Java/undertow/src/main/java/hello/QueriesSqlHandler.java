@@ -1,5 +1,9 @@
 package hello;
 
+import static hello.Helper.getQueries;
+import static hello.Helper.randomWorld;
+import static hello.Helper.sendJson;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import java.sql.Connection;
@@ -20,14 +24,13 @@ final class QueriesSqlHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
-    int queries = Helper.getQueries(exchange);
+    int queries = getQueries(exchange);
     World[] worlds = new World[queries];
     try (Connection connection = db.getConnection();
          PreparedStatement statement =
-             connection.prepareStatement(
-                 "SELECT * FROM World WHERE id = ?")) {
+             connection.prepareStatement("SELECT * FROM World WHERE id = ?")) {
       for (int i = 0; i < worlds.length; i++) {
-        statement.setInt(1, Helper.randomWorld());
+        statement.setInt(1, randomWorld());
         try (ResultSet resultSet = statement.executeQuery()) {
           resultSet.next();
           int id = resultSet.getInt("id");
@@ -36,6 +39,6 @@ final class QueriesSqlHandler implements HttpHandler {
         }
       }
     }
-    Helper.sendJson(exchange, worlds);
+    sendJson(exchange, worlds);
   }
 }

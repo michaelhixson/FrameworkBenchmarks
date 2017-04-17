@@ -68,12 +68,11 @@ public final class HelloWebServer {
     MYSQL() {
       @Override
       HttpHandler paths(Properties props) {
-        DataSource db =
-            newSqlDataSource(
-                props.getProperty("mysql.jdbcUrl"),
-                props.getProperty("mysql.username"),
-                props.getProperty("mysql.password"),
-                Integer.parseInt(props.getProperty("mysql.connections")));
+        String jdbcUrl = props.getProperty("mysql.jdbcUrl");
+        String username = props.getProperty("mysql.username");
+        String password = props.getProperty("mysql.password");
+        int connections = Integer.parseInt(props.getProperty("mysql.connections"));
+        DataSource db = newSqlDataSource(jdbcUrl, username, password, connections);
         return new PathHandler()
             .addExactPath("/db",       new BlockingHandler(new DbSqlHandler(db)))
             .addExactPath("/queries",  new BlockingHandler(new QueriesSqlHandler(db)))
@@ -89,12 +88,11 @@ public final class HelloWebServer {
     POSTGRESQL() {
       @Override
       HttpHandler paths(Properties props) {
-        DataSource db =
-            newSqlDataSource(
-                props.getProperty("postgresql.jdbcUrl"),
-                props.getProperty("postgresql.username"),
-                props.getProperty("postgresql.password"),
-                Integer.parseInt(props.getProperty("postgresql.connections")));
+        String jdbcUrl = props.getProperty("postgresql.jdbcUrl");
+        String username = props.getProperty("postgresql.username");
+        String password = props.getProperty("postgresql.password");
+        int connections = Integer.parseInt(props.getProperty("postgresql.connections"));
+        DataSource db = newSqlDataSource(jdbcUrl, username, password, connections);
         return new PathHandler()
             .addExactPath("/db",       new BlockingHandler(new DbSqlHandler(db)))
             .addExactPath("/queries",  new BlockingHandler(new QueriesSqlHandler(db)))
@@ -110,11 +108,10 @@ public final class HelloWebServer {
     MONGODB() {
       @Override
       HttpHandler paths(Properties props) {
-        MongoDatabase db =
-            newMongoDatabase(
-                props.getProperty("mongodb.host"),
-                props.getProperty("mongodb.databaseName"),
-                Integer.parseInt(props.getProperty("mongodb.connections")));
+        String host = props.getProperty("mongodb.host");
+        String databaseName = props.getProperty("mongodb.databaseName");
+        int connections = Integer.parseInt(props.getProperty("mongodb.connections"));
+        MongoDatabase db = newMongoDatabase(host, databaseName, connections);
         return new PathHandler()
             .addExactPath("/db",       new BlockingHandler(new DbMongoHandler(db)))
             .addExactPath("/queries",  new BlockingHandler(new QueriesMongoHandler(db)))

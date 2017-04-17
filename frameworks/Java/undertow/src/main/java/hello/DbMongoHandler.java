@@ -1,5 +1,9 @@
 package hello;
 
+import static hello.Helper.mongoGetInt;
+import static hello.Helper.randomWorld;
+import static hello.Helper.sendJson;
+
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
 import com.mongodb.client.model.Filters;
@@ -20,11 +24,11 @@ final class DbMongoHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange exchange) throws Exception {
-    Bson filter = Filters.eq(Helper.randomWorld());
+    Bson filter = Filters.eq(randomWorld());
     Document document = worldCollection.find(filter).first();
-    int id = Helper.mongoGetInt(document, "_id");
-    int randomNumber = Helper.mongoGetInt(document, "randomNumber");
+    int id = mongoGetInt(document, "_id");
+    int randomNumber = mongoGetInt(document, "randomNumber");
     World world = new World(id, randomNumber);
-    Helper.sendJson(exchange, world);
+    sendJson(exchange, world);
   }
 }
