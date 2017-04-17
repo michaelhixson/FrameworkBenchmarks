@@ -11,17 +11,23 @@ import java.nio.ByteBuffer;
  * Handles the plaintext test.
  */
 final class PlaintextHandler implements HttpHandler {
+  @Override
+  public void handleRequest(HttpServerExchange exchange) throws Exception {
+    exchange.getResponseHeaders().put(CONTENT_TYPE, "text/plain");
+    // We get a very small performance boost from reusing a byte buffer across
+    // requests instead of using the string "Hello, World!" directly (which
+    // Undertow would, internally, dump into a newly-allocated ByteBuffer on
+    // each request).  The plaintext test requirements explicitly permit this
+    // optimization (the intent of this test type is to exercise request-routing
+    // fundamentals only), so that's why this code is written this way.
+    exchange.getResponseSender().send(buffer.duplicate());
+  }
+
   private static final ByteBuffer buffer;
   static {
     String message = "Hello, World!";
     buffer = ByteBuffer.allocateDirect(message.length());
     buffer.put(message.getBytes(US_ASCII));
     buffer.flip();
-  }
-
-  @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
-    exchange.getResponseHeaders().put(CONTENT_TYPE, "text/plain");
-    exchange.getResponseSender().send(buffer.duplicate());
   }
 }
