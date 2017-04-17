@@ -22,7 +22,7 @@ final class FortunesMongoHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange exchange) throws Exception {
     List<Fortune> fortunes = new ArrayList<>();
     for (Document document : fortuneCollection.find()) {
-      int id = ((Number) document.get("_id")).intValue();
+      int id = Helper.mongoGetInt(document, "_id");
       String message = document.getString("message");
       fortunes.add(new Fortune(id, message));
     }

@@ -12,6 +12,7 @@ import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.util.Deque;
 import java.util.concurrent.ThreadLocalRandom;
+import org.bson.Document;
 
 /**
  * Provides utility methods for the benchmark tests.
@@ -54,6 +55,28 @@ final class Helper {
    */
   static int randomWorld() {
     return 1 + ThreadLocalRandom.current().nextInt(10000);
+  }
+
+  /**
+   * Reads an {@code int} value from a MongoDB document.
+   *
+   * <p>This method should be used instead of
+   * {@link Document#getInteger(Object)} because the values that we expect to be
+   * {@link int}s may either be {@link Integer} or {@link Double} in practice.
+   * The creation script for the MongoDB database inserts these values as
+   * JavaScript numbers, which resolve to {@link Double} in Java.  The execution
+   * of the database updates test may cause (some of) them to be replaced with
+   * {@link Integer} values.  Casting the values to {@link Number} makes this
+   * code compatible with both types of values.
+   *
+   * @param document the document containing the value
+   * @param key the key mapping to the value
+   * @return the value as an {@code int}
+   * @throws NullPointerException if the key has no value
+   * @throws ClassCastException if the value of the key is not a {@link Number}
+   */
+  static int mongoGetInt(Document document, String key) {
+    return ((Number) document.get(key)).intValue();
   }
 
   /**

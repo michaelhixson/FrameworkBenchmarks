@@ -25,8 +25,8 @@ final class QueriesMongoHandler implements HttpHandler {
     for (int i = 0; i < worlds.length; i++) {
       Bson filter = Filters.eq(Helper.randomWorld());
       Document document = worldCollection.find(filter).first();
-      int id = ((Number) document.get("_id")).intValue();
-      int randomNumber = ((Number) document.get("randomNumber")).intValue();
+      int id = Helper.mongoGetInt(document, "_id");
+      int randomNumber = Helper.mongoGetInt(document, "randomNumber");
       worlds[i] = new World(id, randomNumber);
     }
     Helper.sendJson(exchange, worlds);

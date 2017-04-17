@@ -22,12 +22,8 @@ final class DbMongoHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange exchange) throws Exception {
     Bson filter = Filters.eq(Helper.randomWorld());
     Document document = worldCollection.find(filter).first();
-    // The creation script for the Mongo database inserts these values as
-    // JavaScript numbers, which resolve to Doubles in Java.  However, we might
-    // later replace them with Integers.  To make this code compatible with
-    // both, we cast the values to Number.
-    int id = ((Number) document.get("_id")).intValue();
-    int randomNumber = ((Number) document.get("randomNumber")).intValue();
+    int id = Helper.mongoGetInt(document, "_id");
+    int randomNumber = Helper.mongoGetInt(document, "randomNumber");
     World world = new World(id, randomNumber);
     Helper.sendJson(exchange, world);
   }
