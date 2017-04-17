@@ -16,16 +16,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 
 /**
- * An implementation of the TechEmpower benchmark tests using the Undertow web
- * server.
- *
- * <p>The only test that truly exercises Undertow in isolation is the plaintext
- * test.  For the rest, it uses best-of-breed components that are expected to
- * perform well.  The idea is that using these components enables these tests to
- * serve as performance baselines for hypothetical Undertow-based frameworks.
- * For example, it is unlikely that such frameworks would complete the JSON test
- * faster than this will, because this implementation uses Undertow and Jackson
- * in the most direct way possible to fulfill the test requirements.
+ * Provides the {@link #main(String[])} method, which launches the application.
  */
 public final class HelloWebServer {
   private HelloWebServer() {
