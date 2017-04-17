@@ -38,6 +38,9 @@ public final class HelloWebServer {
     HttpHandler rootHandler = new SetHeaderHandler(paths, "Server", "U-tow");
     Undertow.builder()
             .addHttpListener(port, host)
+            // In HTTP/1.1, connections are persistent unless declared
+            // otherwise.  Adding a "Connection: keep-alive" header to every
+            // response would only add useless bytes.
             .setServerOption(UndertowOptions.ALWAYS_SET_KEEP_ALIVE, false)
             .setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
             .setHandler(rootHandler)
