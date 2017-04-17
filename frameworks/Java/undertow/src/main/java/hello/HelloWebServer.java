@@ -42,7 +42,6 @@ public final class HelloWebServer {
             // otherwise.  Adding a "Connection: keep-alive" header to every
             // response would only add useless bytes.
             .setServerOption(UndertowOptions.ALWAYS_SET_KEEP_ALIVE, false)
-            .setServerOption(UndertowOptions.ALWAYS_SET_DATE, true)
             .setHandler(rootHandler)
             .build()
             .start();
