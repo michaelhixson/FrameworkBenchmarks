@@ -2,12 +2,12 @@ package hello;
 
 import static io.undertow.util.Headers.CONTENT_TYPE;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.mustachejava.DefaultMustacheFactory;
 import com.github.mustachejava.Mustache;
 import com.github.mustachejava.MustacheFactory;
 import io.undertow.server.HttpServerExchange;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.util.Deque;
@@ -85,11 +85,15 @@ final class Helper {
    *
    * @param exchange the current HTTP exchange
    * @param value the value to be encoded as JSON
-   * @throws JsonProcessingException if the value cannot be encoded as JSON
+   * @throws IllegalArgumentException if the value cannot be encoded as JSON
    */
-  static void sendJson(HttpServerExchange exchange, Object value)
-      throws JsonProcessingException {
-    byte[] jsonBytes = objectMapper.writeValueAsBytes(value);
+  static void sendJson(HttpServerExchange exchange, Object value) {
+    byte[] jsonBytes;
+    try {
+      jsonBytes = objectMapper.writeValueAsBytes(value);
+    } catch (IOException e) {
+      throw new IllegalArgumentException(e);
+    }
     ByteBuffer jsonBuffer = ByteBuffer.wrap(jsonBytes);
     exchange.getResponseHeaders().put(CONTENT_TYPE, "application/json");
     exchange.getResponseSender().send(jsonBuffer);
