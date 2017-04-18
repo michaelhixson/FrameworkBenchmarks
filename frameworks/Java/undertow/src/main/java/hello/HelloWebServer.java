@@ -1,13 +1,13 @@
 package hello;
 
-import com.mongodb.ConnectionString;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.ServerAddress;
 import com.mongodb.async.client.MongoClientSettings;
 import com.mongodb.async.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
-import com.mongodb.connection.ServerSettings;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.undertow.Undertow;
@@ -17,6 +17,7 @@ import io.undertow.server.handlers.BlockingHandler;
 import io.undertow.server.handlers.PathHandler;
 import io.undertow.server.handlers.SetHeaderHandler;
 import java.io.InputStream;
+import java.util.Collections;
 import java.util.Properties;
 import javax.sql.DataSource;
 
@@ -190,12 +191,10 @@ public final class HelloWebServer {
     newMongoDatabaseAsync(String host,
                           String databaseName,
                           int connections) {
-      ConnectionString connectionString =
-          new ConnectionString("mongodb://" + host);
-      ServerSettings serverSettings =
-          ServerSettings
+      ClusterSettings clusterSettings =
+          ClusterSettings
               .builder()
-              .applyConnectionString(connectionString)
+              .hosts(Collections.singletonList(new ServerAddress(host)))
               .build();
       ConnectionPoolSettings connectionPoolSettings =
           ConnectionPoolSettings
@@ -206,7 +205,7 @@ public final class HelloWebServer {
       MongoClientSettings clientSettings =
           MongoClientSettings
               .builder()
-              .serverSettings(serverSettings)
+              .clusterSettings(clusterSettings)
               .connectionPoolSettings(connectionPoolSettings)
               .build();
       com.mongodb.async.client.MongoClient client =
