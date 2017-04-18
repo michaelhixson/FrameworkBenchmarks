@@ -52,6 +52,7 @@ Additional libraries used:
 * [MySQL Connector/J]
 * [PostgreSQL JDBC Driver]
 * [Java MongoDB Driver]
+* [HikariCP]
 
 ### Database multi-query
 
@@ -66,6 +67,7 @@ Additional libraries used:
 * [MySQL Connector/J]
 * [PostgreSQL JDBC Driver]
 * [Java MongoDB Driver]
+* [HikariCP]
 
 ### Database updates
 
@@ -80,6 +82,7 @@ Additional libraries used:
 * [MySQL Connector/J]
 * [PostgreSQL JDBC Driver]
 * [Java MongoDB Driver]
+* [HikariCP]
 
 ### Fortunes
 
@@ -94,9 +97,11 @@ Additional libraries used:
 * [MySQL Connector/J]
 * [PostgreSQL JDBC Driver]
 * [Java MongoDB Driver]
+* [HikariCP]
 
 [Jackson]: https://github.com/FasterXML/Jackson
 [Mustache.java]: https://github.com/spullara/mustache.java
 [MySQL Connector/J]: https://dev.mysql.com/downloads/connector/j/5.1.html
 [PostgreSQL JDBC Driver]: https://jdbc.postgresql.org/
 [Java MongoDB Driver]: https://docs.mongodb.com/ecosystem/drivers/java/
+[HikariCP]: https://github.com/brettwooldridge/HikariCP
