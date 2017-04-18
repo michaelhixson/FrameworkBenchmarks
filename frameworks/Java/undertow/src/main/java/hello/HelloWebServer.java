@@ -197,7 +197,6 @@ public final class HelloWebServer {
               .builder()
               .mode(ClusterConnectionMode.SINGLE)
               .hosts(Collections.singletonList(new ServerAddress(host)))
-              .maxWaitQueueSize(1024)
               .build();
       ConnectionPoolSettings connectionPoolSettings =
           ConnectionPoolSettings
