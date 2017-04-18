@@ -135,4 +135,16 @@ final class Helper {
     exchange.endExchange();
     exception.printStackTrace();
   }
+
+  static World mongoDocumentToWorld(Document document) {
+    int id = mongoGetInt(document, "_id");
+    int randomNumber = mongoGetInt(document, "randomNumber");
+    return new World(id, randomNumber);
+  }
+
+  static Fortune mongoDocumentToFortune(Document document) {
+    int id = mongoGetInt(document, "_id");
+    String message = document.getString("message");
+    return new Fortune(id, message);
+  }
 }

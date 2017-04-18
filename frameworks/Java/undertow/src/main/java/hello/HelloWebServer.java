@@ -6,6 +6,7 @@ import com.mongodb.ServerAddress;
 import com.mongodb.async.client.MongoClientSettings;
 import com.mongodb.async.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ClusterConnectionMode;
 import com.mongodb.connection.ClusterSettings;
 import com.mongodb.connection.ConnectionPoolSettings;
 import com.zaxxer.hikari.HikariConfig;
@@ -139,10 +140,10 @@ public final class HelloWebServer {
         com.mongodb.async.client.MongoDatabase db =
             newMongoDatabaseAsync(host, databaseName, connections);
         return new PathHandler()
-            .addExactPath("/db",       new DbMongoAsyncHandler(db))
-            .addExactPath("/queries",  new QueriesMongoAsyncHandler(db))
-            .addExactPath("/fortunes", new FortunesMongoAsyncHandler(db))
-            .addExactPath("/updates",  new UpdatesMongoAsyncHandler(db));
+            .addExactPath("/db",       new AsyncHandler(new DbMongoAsyncHandler(db)))
+            .addExactPath("/queries",  new AsyncHandler(new QueriesMongoAsyncHandler(db)))
+            .addExactPath("/fortunes", new AsyncHandler(new FortunesMongoAsyncHandler(db)))
+            .addExactPath("/updates",  new AsyncHandler(new UpdatesMongoAsyncHandler(db)));
       }
     };
 
@@ -194,7 +195,9 @@ public final class HelloWebServer {
       ClusterSettings clusterSettings =
           ClusterSettings
               .builder()
+              .mode(ClusterConnectionMode.SINGLE)
               .hosts(Collections.singletonList(new ServerAddress(host)))
+              .maxWaitQueueSize(1024)
               .build();
       ConnectionPoolSettings connectionPoolSettings =
           ConnectionPoolSettings

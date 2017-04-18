@@ -1,18 +1,14 @@
 package hello;
 
-import static hello.Helper.mongoGetInt;
 import static hello.Helper.randomWorld;
 import static hello.Helper.sendException;
 import static hello.Helper.sendJson;
 
-import com.mongodb.async.SingleResultCallback;
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.async.client.MongoDatabase;
-import com.mongodb.async.client.MongoIterable;
 import com.mongodb.client.model.Filters;
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
-import io.undertow.util.SameThreadExecutor;
 import org.bson.Document;
 
 /**
@@ -27,24 +23,16 @@ final class DbMongoAsyncHandler implements HttpHandler {
 
   @Override
   public void handleRequest(HttpServerExchange exchange) {
-    MongoIterable<World> findRandomWorld =
-        worldCollection
-            .find(Filters.eq(randomWorld()))
-            .map(document -> {
-              int id = mongoGetInt(document, "_id");
-              int randomNumber = mongoGetInt(document, "randomNumber");
-              return new World(id, randomNumber);
+    worldCollection
+        .find(Filters.eq(randomWorld()))
+        .map(Helper::mongoDocumentToWorld)
+        .first(
+            (world, exception) -> {
+              if (exception != null) {
+                sendException(exchange, exception);
+              } else {
+                sendJson(exchange, world);
+              }
             });
-    SingleResultCallback<World> onFindFirst =
-        (world, exception) -> {
-          if (exception != null) {
-            sendException(exchange, exception);
-          } else {
-            sendJson(exchange, world);
-          }
-        };
-    exchange.dispatch(
-        SameThreadExecutor.INSTANCE,
-        () -> findRandomWorld.first(onFindFirst));
   }
 }
