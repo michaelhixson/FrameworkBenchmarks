@@ -11,7 +11,11 @@ import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
 import java.util.Deque;
+import java.util.List;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ThreadLocalRandom;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 import org.bson.Document;
 
 /**
@@ -146,5 +150,23 @@ final class Helper {
     int id = mongoGetInt(document, "_id");
     String message = document.getString("message");
     return new Fortune(id, message);
+  }
+
+  /**
+   * Transforms a stream of futures ({@code Stream<CompletableFuture<T>>}) into
+   * a single future ({@code CompletableFuture<List<T>>}) containing all the
+   * input values.  The resulting future completes when all of the input futures
+   * complete.
+   */
+  static <T> Collector<CompletableFuture<T>, ?, CompletableFuture<List<T>>>
+  allComplete() {
+    return Collectors.collectingAndThen(
+        Collectors.toList(),
+        futures ->
+            CompletableFuture
+                .allOf(futures.toArray(new CompletableFuture[0]))
+                .thenApply(nothing -> futures.stream()
+                                             .map(CompletableFuture::join)
+                                             .collect(Collectors.toList())));
   }
 }
