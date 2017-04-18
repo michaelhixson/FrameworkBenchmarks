@@ -1,8 +1,13 @@
 package hello;
 
+import com.mongodb.ConnectionString;
 import com.mongodb.MongoClient;
 import com.mongodb.MongoClientOptions;
+import com.mongodb.async.client.MongoClientSettings;
+import com.mongodb.async.client.MongoClients;
 import com.mongodb.client.MongoDatabase;
+import com.mongodb.connection.ConnectionPoolSettings;
+import com.mongodb.connection.ServerSettings;
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import io.undertow.Undertow;
@@ -118,6 +123,26 @@ public final class HelloWebServer {
             .addExactPath("/fortunes", new BlockingHandler(new FortunesMongoHandler(db)))
             .addExactPath("/updates",  new BlockingHandler(new UpdatesMongoHandler(db)));
       }
+    },
+
+    /**
+     * The server will use a MongoDB database with an asynchronous API and will
+     * only implement the test types that require a database.
+     */
+    MONGODB_ASYNC() {
+      @Override
+      HttpHandler paths(Properties props) {
+        String host = props.getProperty("mongodb.host");
+        String databaseName = props.getProperty("mongodb.databaseName");
+        int connections = Integer.parseInt(props.getProperty("mongodb.connections"));
+        com.mongodb.async.client.MongoDatabase db =
+            newMongoDatabaseAsync(host, databaseName, connections);
+        return new PathHandler()
+            .addExactPath("/db",       new DbMongoAsyncHandler(db))
+            .addExactPath("/queries",  new QueriesMongoAsyncHandler(db))
+            .addExactPath("/fortunes", new FortunesMongoAsyncHandler(db))
+            .addExactPath("/updates",  new UpdatesMongoAsyncHandler(db));
+      }
     };
 
     /**
@@ -154,6 +179,38 @@ public final class HelloWebServer {
       options.minConnectionsPerHost(connections);
       options.connectionsPerHost(connections);
       MongoClient client = new MongoClient(host, options.build());
+      return client.getDatabase(databaseName);
+    }
+
+    /**
+     * Provides a source of connections to a MongoDB database with an
+     * asynchronous API.
+     */
+    static com.mongodb.async.client.MongoDatabase
+    newMongoDatabaseAsync(String host,
+                          String databaseName,
+                          int connections) {
+      ConnectionString connectionString =
+          new ConnectionString("mongodb://" + host);
+      ServerSettings serverSettings =
+          ServerSettings
+              .builder()
+              .applyConnectionString(connectionString)
+              .build();
+      ConnectionPoolSettings connectionPoolSettings =
+          ConnectionPoolSettings
+              .builder()
+              .minSize(connections)
+              .maxSize(connections)
+              .build();
+      MongoClientSettings clientSettings =
+          MongoClientSettings
+              .builder()
+              .serverSettings(serverSettings)
+              .connectionPoolSettings(connectionPoolSettings)
+              .build();
+      com.mongodb.async.client.MongoClient client =
+          MongoClients.create(clientSettings);
       return client.getDatabase(databaseName);
     }
   }

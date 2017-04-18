@@ -122,4 +122,17 @@ final class Helper {
 
   private static final MustacheFactory mustacheFactory =
       new DefaultMustacheFactory();
+
+  /**
+   * Ends the HTTP exchange with an exception.
+   *
+   * @param exchange the current HTTP exchange
+   * @param exception the exception that was thrown
+   */
+  static void sendException(HttpServerExchange exchange,
+                            Throwable exception) {
+    exchange.setStatusCode(500);
+    exchange.endExchange();
+    exception.printStackTrace();
+  }
 }
