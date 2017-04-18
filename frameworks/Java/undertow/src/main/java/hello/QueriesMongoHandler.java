@@ -24,7 +24,7 @@ final class QueriesMongoHandler implements HttpHandler {
   }
 
   @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
+  public void handleRequest(HttpServerExchange exchange) {
     int queries = getQueries(exchange);
     World[] worlds = new World[queries];
     for (int i = 0; i < worlds.length; i++) {

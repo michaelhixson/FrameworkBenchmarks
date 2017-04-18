@@ -23,7 +23,7 @@ final class DbMongoHandler implements HttpHandler {
   }
 
   @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
+  public void handleRequest(HttpServerExchange exchange) {
     Bson filter = Filters.eq(randomWorld());
     Document document = worldCollection.find(filter).first();
     int id = mongoGetInt(document, "_id");

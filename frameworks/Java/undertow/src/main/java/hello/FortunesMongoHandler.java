@@ -22,7 +22,7 @@ final class FortunesMongoHandler implements HttpHandler {
   }
 
   @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
+  public void handleRequest(HttpServerExchange exchange) {
     List<Fortune> fortunes = new ArrayList<>();
     for (Document document : fortuneCollection.find()) {
       int id = mongoGetInt(document, "_id");
