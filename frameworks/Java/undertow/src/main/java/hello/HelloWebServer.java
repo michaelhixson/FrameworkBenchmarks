@@ -203,6 +203,7 @@ public final class HelloWebServer {
               .builder()
               .minSize(connections)
               .maxSize(connections)
+              .maxWaitQueueSize(256 * 256)
               .build();
       MongoClientSettings clientSettings =
           MongoClientSettings
