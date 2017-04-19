@@ -121,12 +121,18 @@ final class Helper {
     exception.printStackTrace();
   }
 
+  /**
+   * Reads a {@link World} from its persisted {@link Document} representation.
+   */
   static World mongoDocumentToWorld(Document document) {
     int id = mongoGetInt(document, "_id");
     int randomNumber = mongoGetInt(document, "randomNumber");
     return new World(id, randomNumber);
   }
 
+  /**
+   * Reads a {@link Fortune} from its persisted {@link Document} representation.
+   */
   static Fortune mongoDocumentToFortune(Document document) {
     int id = mongoGetInt(document, "_id");
     String message = document.getString("message");
