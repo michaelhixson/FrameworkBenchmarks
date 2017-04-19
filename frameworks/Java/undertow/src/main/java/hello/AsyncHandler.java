@@ -1,5 +1,7 @@
 package hello;
 
+import static hello.Helper.sendException;
+
 import io.undertow.server.HttpHandler;
 import io.undertow.server.HttpServerExchange;
 import io.undertow.util.SameThreadExecutor;
@@ -24,7 +26,7 @@ final class AsyncHandler implements HttpHandler {
           try {
             handler.handleRequest(exchange);
           } catch (Exception e) {
-            throw new RuntimeException(e);
+            sendException(exchange, e);
           }
         };
     exchange.dispatch(SameThreadExecutor.INSTANCE, asyncTask);
