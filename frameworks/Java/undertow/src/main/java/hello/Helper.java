@@ -10,6 +10,9 @@ import io.undertow.server.HttpServerExchange;
 import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -142,15 +145,30 @@ final class Helper {
    * values of the input futures.  The resulting future completes when all of
    * the input futures complete.
    */
-  static <T> Collector<CompletableFuture<T>, ?, CompletableFuture<List<T>>>
+  static <T> Collector<
+      CompletableFuture<? extends T>,
+      ?,
+      CompletableFuture<List<T>>>
   toCompletableFuture() {
     return Collectors.collectingAndThen(
         Collectors.toList(),
-        futures ->
-            CompletableFuture
-                .allOf(futures.toArray(new CompletableFuture[0]))
-                .thenApply(nothing -> futures.stream()
-                                             .map(CompletableFuture::join)
-                                             .collect(Collectors.toList())));
+        Helper::futureValuesOf);
+  }
+
+  private static <T> CompletableFuture<List<T>> futureValuesOf(
+      Collection<CompletableFuture<? extends T>> futures) {
+    CompletableFuture<?>[] futuresArray =
+        futures.toArray(new CompletableFuture<?>[0]);
+    CompletableFuture<Void> allComplete = CompletableFuture.allOf(futuresArray);
+    return allComplete.thenApply(
+        nil -> {
+          List<T> values = new ArrayList<>(futuresArray.length);
+          for (CompletableFuture<?> future : futuresArray) {
+            @SuppressWarnings("unchecked")
+            T value = (T) future.join();
+            values.add(value);
+          }
+          return Collections.unmodifiableList(values);
+        });
   }
 }
