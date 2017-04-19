@@ -203,7 +203,8 @@ public final class HelloWebServer {
               .builder()
               .minSize(connections)
               .maxSize(connections)
-              .maxWaitQueueSize(256 * 256)
+              .maxWaitQueueSize(
+                  MAX_DB_REQUEST_CONCURRENCY * MAX_DB_QUERIES_PER_REQUEST)
               .build();
       MongoClientSettings clientSettings =
           MongoClientSettings
@@ -215,5 +216,8 @@ public final class HelloWebServer {
           MongoClients.create(clientSettings);
       return client.getDatabase(databaseName);
     }
+
+    private static final int MAX_DB_REQUEST_CONCURRENCY = 256;
+    private static final int MAX_DB_QUERIES_PER_REQUEST = 20;
   }
 }
