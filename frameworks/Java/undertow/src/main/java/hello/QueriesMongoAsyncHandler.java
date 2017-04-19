@@ -29,21 +29,22 @@ final class QueriesMongoAsyncHandler implements HttpHandler {
   public void handleRequest(HttpServerExchange exchange) {
     IntStream
         .range(0, getQueries(exchange))
-        .mapToObj(i -> {
-          CompletableFuture<World> future = new CompletableFuture<>();
-          worldCollection
-              .find(Filters.eq(randomWorld()))
-              .map(Helper::mongoDocumentToWorld)
-              .first(
-                  (world, exception) -> {
-                    if (exception != null) {
-                      future.completeExceptionally(exception);
-                    } else {
-                      future.complete(world);
-                    }
-                  });
-          return future;
-        })
+        .mapToObj(
+            i -> {
+              CompletableFuture<World> future = new CompletableFuture<>();
+              worldCollection
+                  .find(Filters.eq(randomWorld()))
+                  .map(Helper::mongoDocumentToWorld)
+                  .first(
+                      (world, exception) -> {
+                        if (exception != null) {
+                          future.completeExceptionally(exception);
+                        } else {
+                          future.complete(world);
+                        }
+                      });
+              return future;
+            })
         .collect(toCompletableFuture())
         .whenComplete(
             (worlds, exception) -> {
