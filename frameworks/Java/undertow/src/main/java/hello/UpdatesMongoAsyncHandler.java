@@ -1,10 +1,10 @@
 package hello;
 
-import static hello.Helper.allComplete;
 import static hello.Helper.getQueries;
 import static hello.Helper.randomWorld;
 import static hello.Helper.sendException;
 import static hello.Helper.sendJson;
+import static hello.Helper.toCompletableFuture;
 
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.async.client.MongoDatabase;
@@ -50,7 +50,7 @@ final class UpdatesMongoAsyncHandler implements HttpHandler {
                   });
           return future;
         })
-        .collect(allComplete())
+        .collect(toCompletableFuture())
         .thenCompose(
             worlds -> {
               List<WriteModel<Document>> writes = new ArrayList<>(worlds.size());

@@ -1,10 +1,10 @@
 package hello;
 
-import static hello.Helper.allComplete;
 import static hello.Helper.getQueries;
 import static hello.Helper.randomWorld;
 import static hello.Helper.sendException;
 import static hello.Helper.sendJson;
+import static hello.Helper.toCompletableFuture;
 
 import com.mongodb.async.client.MongoCollection;
 import com.mongodb.async.client.MongoDatabase;
@@ -44,7 +44,7 @@ final class QueriesMongoAsyncHandler implements HttpHandler {
                   });
           return future;
         })
-        .collect(allComplete())
+        .collect(toCompletableFuture())
         .whenComplete(
             (worlds, exception) -> {
               if (exception != null) {

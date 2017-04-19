@@ -139,11 +139,11 @@ final class Helper {
   /**
    * Transforms a stream of futures ({@code Stream<CompletableFuture<T>>}) into
    * a single future ({@code CompletableFuture<List<T>>}) containing all the
-   * input values.  The resulting future completes when all of the input futures
-   * complete.
+   * values of the input futures.  The resulting future completes when all of
+   * the input futures complete.
    */
   static <T> Collector<CompletableFuture<T>, ?, CompletableFuture<List<T>>>
-  allComplete() {
+  toCompletableFuture() {
     return Collectors.collectingAndThen(
         Collectors.toList(),
         futures ->
