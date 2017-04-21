@@ -12,7 +12,7 @@ import java.util.Map;
  */
 final class JsonHandler implements HttpHandler {
   @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
+  public void handleRequest(HttpServerExchange exchange) {
     Map<String, String> value =
         Collections.singletonMap("message", "Hello, World!");
     sendJson(exchange, value);

@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  */
 final class PlaintextHandler implements HttpHandler {
   @Override
-  public void handleRequest(HttpServerExchange exchange) throws Exception {
+  public void handleRequest(HttpServerExchange exchange) {
     exchange.getResponseHeaders().put(CONTENT_TYPE, "text/plain");
     // We get a very small performance boost from reusing a byte buffer across
     // requests instead of using the string "Hello, World!" directly (which
