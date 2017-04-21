@@ -22,7 +22,7 @@ import org.bson.Document;
 import org.bson.conversions.Bson;
 
 /**
- * Handles the updates test using MongoDB asynchronously.
+ * Handles the updates test using MongoDB with an asynchronous API.
  */
 final class UpdatesMongoAsyncHandler implements HttpHandler {
   private final MongoCollection<Document> worldCollection;

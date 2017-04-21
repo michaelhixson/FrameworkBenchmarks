@@ -22,7 +22,7 @@ import java.util.stream.Collectors;
 import org.bson.Document;
 
 /**
- * Provides utility methods for the benchmark tests.
+ * Provides utility methods for the application.
  */
 final class Helper {
   private Helper() {
@@ -114,8 +114,7 @@ final class Helper {
    * @param exchange the current HTTP exchange
    * @param exception the exception that was thrown
    */
-  static void sendException(HttpServerExchange exchange,
-                            Throwable exception) {
+  static void sendException(HttpServerExchange exchange, Throwable exception) {
     exchange.setStatusCode(500);
     exchange.endExchange();
     exception.printStackTrace();

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import org.bson.Document;
 
 /**
- * Handles the fortunes test using MongoDB asynchronously.
+ * Handles the fortunes test using MongoDB with an asynchronous API.
  */
 final class FortunesMongoAsyncHandler implements HttpHandler {
   private final MongoCollection<Document> fortuneCollection;

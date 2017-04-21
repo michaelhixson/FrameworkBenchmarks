@@ -12,7 +12,8 @@ import io.undertow.server.HttpServerExchange;
 import org.bson.Document;
 
 /**
- * Handles the single-query database test using MongoDB asynchronously.
+ * Handles the single-query database test using MongoDB with an asynchronous
+ * API.
  */
 final class DbMongoAsyncHandler implements HttpHandler {
   private final MongoCollection<Document> worldCollection;
