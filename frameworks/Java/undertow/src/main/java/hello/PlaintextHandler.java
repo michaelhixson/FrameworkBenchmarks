@@ -17,12 +17,9 @@ final class PlaintextHandler implements HttpHandler {
     exchange.getResponseSender().send(buffer.duplicate());
   }
 
-  // We get a very small performance boost from reusing a byte buffer across
-  // requests instead of using the string "Hello, World!" directly (which
-  // Undertow would, internally, dump into a newly-allocated ByteBuffer on each
-  // request).  The plaintext test requirements explicitly permit this
-  // optimization (the intent of this test type is to exercise request-routing
-  // fundamentals only), so that's why this code is written this way.
+  // Normally, one would send the string "Hello, World!" directly.  Reusing a
+  // ByteBuffer is a micro-optimization that is explicitly permitted by the
+  // plaintext test requirements.
 
   private static final ByteBuffer buffer;
   static {
