@@ -16,8 +16,7 @@ import java.util.stream.IntStream;
 import org.bson.Document;
 
 /**
- * Handles the multiple-query database test using MongoDB with an asynchronous
- * API.
+ * Handles the multi-query database test using MongoDB with an asynchronous API.
  */
 final class QueriesMongoAsyncHandler implements HttpHandler {
   private final MongoCollection<Document> worldCollection;

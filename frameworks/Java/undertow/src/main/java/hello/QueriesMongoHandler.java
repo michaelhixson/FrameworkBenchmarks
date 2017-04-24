@@ -12,7 +12,7 @@ import io.undertow.server.HttpServerExchange;
 import org.bson.Document;
 
 /**
- * Handles the multiple-query database test using MongoDB.
+ * Handles the multi-query database test using MongoDB.
  */
 final class QueriesMongoHandler implements HttpHandler {
   private final MongoCollection<Document> worldCollection;

@@ -13,7 +13,7 @@ import java.util.Objects;
 import javax.sql.DataSource;
 
 /**
- * Handles the multiple-query database test using a SQL database.
+ * Handles the multi-query database test using a SQL database.
  */
 final class QueriesSqlHandler implements HttpHandler {
   private final DataSource db;
