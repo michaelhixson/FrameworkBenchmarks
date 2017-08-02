@@ -45,7 +45,7 @@ fi
 
 ULIMIT=$(grep '^ulimit=' $FILE | grep -Po '[0-9]+')
 
-if [ ! $ULIMIT ]; then ULIMIT=200000; fi;
+if [ ! $ULIMIT ]; then ULIMIT=200001; fi;
 
 sudo sh -c "echo '*               -    nofile          ${ULIMIT}' >> /etc/security/limits.conf"
 sudo sh -c "echo '*            hard    rtprio             99' >> /etc/security/limits.conf"

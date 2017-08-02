@@ -119,7 +119,7 @@ def main(argv=None):
     if defaults['server_host'] is None:
         defaults['server_host'] = defaults['client_host']
     if defaults['ulimit'] is None:
-        defaults['ulimit'] = 200000
+        defaults['ulimit'] = 200002
 
     os.environ['ULIMIT'] = str(defaults['ulimit'])
 
