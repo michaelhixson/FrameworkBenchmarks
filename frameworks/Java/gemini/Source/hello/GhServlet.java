@@ -24,7 +24,7 @@ public class GhServlet
 {
 
   //
-  // Public member methods.
+  // Public member methods!
   //
 
   /**
