@@ -53,3 +53,4 @@
 ./gemini/Docroot/WEB-INF/GeminiHello.conf
 ./gemini/Docroot/WEB-INF/GeminiHello-Base.conf
 ./gemini/build.xml
+/foo/bar
