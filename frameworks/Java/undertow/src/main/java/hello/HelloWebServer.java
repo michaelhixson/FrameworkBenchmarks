@@ -22,6 +22,8 @@ import java.util.ArrayList;
 import java.util.Map;
 import java.util.Objects;
 import java.util.StringJoiner;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadLocalRandom;
 import javax.sql.DataSource;
 
@@ -30,7 +32,7 @@ public final class HelloWebServer {
     throw new AssertionError();
   }
 
-  enum Mode { NO_DATABASE, POSTGRESQL }
+  enum Mode { NO_DATABASE, POSTGRESQL, POSTGRESQL_OS_THREADS, POSTGRESQL_VIRTUAL_THREADS }
 
   public static void main(String[] args) {
     var mode = Mode.valueOf(args[0]);
@@ -57,6 +59,15 @@ public final class HelloWebServer {
     switch (mode) {
       case NO_DATABASE: return noDatabasePathHandler();
       case POSTGRESQL:  return postgresqlPathHandler();
+      case POSTGRESQL_OS_THREADS:
+        return postgresqlPathHandler(
+            Executors.newFixedThreadPool(
+                // Attempt to size like Undertow's default worker pool, which
+                // is 8 * io_thread_count.
+                Runtime.getRuntime().availableProcessors() * 2 * 8));
+      case POSTGRESQL_VIRTUAL_THREADS:
+        return postgresqlPathHandler(
+            Executors.newUnboundedVirtualThreadExecutor());
     }
     throw new AssertionError(mode);
   }
@@ -82,6 +93,46 @@ public final class HelloWebServer {
             .addExactPath("/queries", queriesHandler(db))
             .addExactPath("/fortunes", fortunesHandler(db))
             .addExactPath("/updates", updatesHandler(db)));
+  }
+
+  static HttpHandler postgresqlPathHandler(Executor executor) {
+    Objects.requireNonNull(executor);
+
+    var config = new HikariConfig();
+    config.setJdbcUrl("jdbc:postgresql://tfb-database:5432/hello_world");
+    config.setUsername("benchmarkdbuser");
+    config.setPassword("benchmarkdbpass");
+    config.setMaximumPoolSize(48);
+
+    var db = new HikariDataSource(config);
+
+    return new ExecutorHandler(
+        executor,
+        new PathHandler()
+            .addExactPath("/db", dbHandler(db))
+            .addExactPath("/queries", queriesHandler(db))
+            .addExactPath("/fortunes", fortunesHandler(db))
+            .addExactPath("/updates", updatesHandler(db)));
+  }
+
+  static final class ExecutorHandler implements HttpHandler {
+    private final Executor executor;
+    private final HttpHandler next;
+
+    ExecutorHandler(Executor executor, HttpHandler next) {
+      this.executor = Objects.requireNonNull(executor);
+      this.next = Objects.requireNonNull(next);
+    }
+
+    @Override
+    public void handleRequest(HttpServerExchange exchange) throws Exception {
+      exchange.startBlocking();
+      if (exchange.isInIoThread()) {
+        exchange.dispatch(executor, next);
+      } else {
+        next.handleRequest(exchange);
+      }
+    }
   }
 
   static HttpHandler plaintextHandler() {
