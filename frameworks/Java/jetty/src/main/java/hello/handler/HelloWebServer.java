@@ -58,7 +58,7 @@ public final class HelloWebServer
     private static final boolean USE_VIRTUAL_THREADS = "true".equals(System.getenv("USE_VIRTUAL_THREADS"));
     private static final boolean ADD_RESPONSE_DELAY = "true".equals(System.getenv("ADD_RESPONSE_DELAY"));
 
-    static void delayResponse() {
+    public static void delayResponse() {
       if (ADD_RESPONSE_DELAY) {
         try {
           Thread.sleep(100);

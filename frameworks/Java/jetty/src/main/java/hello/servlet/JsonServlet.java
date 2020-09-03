@@ -1,5 +1,6 @@
 package hello.servlet;
 
+import hello.handler.HelloWebServer;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Map;
@@ -21,6 +22,7 @@ public class JsonServlet extends GenericServlet
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
     {
+        HelloWebServer.delayResponse();
         HttpServletResponse response= (HttpServletResponse)res;
         response.setContentType("application/json");
         Map<String,String> map = Collections.singletonMap("message","Hello, World!");

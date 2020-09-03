@@ -1,5 +1,6 @@
 package hello.servlet;
 
+import hello.handler.HelloWebServer;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -21,6 +22,7 @@ public class PlaintextServlet extends GenericServlet
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
     {
+        HelloWebServer.delayResponse();
         HttpServletResponse response= (HttpServletResponse)res;
         response.setContentType(MimeTypes.Type.TEXT_PLAIN.asString());
         response.getOutputStream().write(helloWorld);
