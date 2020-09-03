@@ -5,6 +5,9 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.util.Collections;
 import java.util.Map;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 import javax.servlet.GenericServlet;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
@@ -16,26 +19,33 @@ import org.eclipse.jetty.util.ajax.JSON;
 public class JsonServletAsync extends GenericServlet
 {
     private JSON json = new JSON();
+
+    private final ScheduledExecutorService scheduler =
+        Executors.newScheduledThreadPool(Runtime.getRuntime().availableProcessors());
     
     @Override
     public void service(ServletRequest req, ServletResponse res) throws ServletException, IOException
     {
         var async = req.startAsync();
-        async.start(() -> {
-            HelloWebServer.delayResponse();
-            HttpServletResponse response= (HttpServletResponse)res;
-            response.setContentType("application/json");
-            Map<String,String> map = Collections.singletonMap("message","Hello, World!");
+        scheduler.schedule(
+            () -> {
+                async.start(() -> {
+                    HttpServletResponse response= (HttpServletResponse)res;
+                    response.setContentType("application/json");
+                    Map<String,String> map = Collections.singletonMap("message","Hello, World!");
 
-            try {
-                json.append(response.getWriter(), map);
-            } catch (IOException e) {
-                throw new UncheckedIOException(e);
-            }
+                    try {
+                        json.append(response.getWriter(), map);
+                    } catch (IOException e) {
+                        throw new UncheckedIOException(e);
+                    }
 
-            async.complete();
+                    async.complete();
 
-        });
+                });
+            },
+            HelloWebServer.ADD_RESPONSE_DELAY ? 100 : 0,
+            TimeUnit.MILLISECONDS);
     }
 
 }
