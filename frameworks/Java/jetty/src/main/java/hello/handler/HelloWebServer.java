@@ -128,11 +128,13 @@ public final class HelloWebServer
     {
         JsonHandler _jsonHandler=new JsonHandler();
         PlainTextHandler _plainHandler=new PlainTextHandler();
+        ExternalRequestHandler _externalRequestHandler=new ExternalRequestHandler();
         
         public PathHandler()
         {
             addBean(_jsonHandler);
             addBean(_plainHandler);
+            addBean(_externalRequestHandler);
         }
 
         @Override
@@ -141,6 +143,7 @@ public final class HelloWebServer
             super.setServer(server);
             _jsonHandler.setServer(server);
             _plainHandler.setServer(server);
+            _externalRequestHandler.setServer(server);
         }
 
         @Override
@@ -150,6 +153,8 @@ public final class HelloWebServer
                 _plainHandler.handle(target,baseRequest,request,response);
             else if ("/json".equals(target))
                 _jsonHandler.handle(target,baseRequest,request,response);
+            else if ("/external".equals(target))
+                _externalRequestHandler.handle(target,baseRequest,request,response);
         }
         
     }

@@ -27,6 +27,7 @@ public final class HelloWebServerServlet
         server.setHandler(context);
 
         context.addServlet(org.eclipse.jetty.servlet.DefaultServlet.class,"/");
+        context.addServlet(ExternalRequestServlet.class, "/external");
         context.addServlet(JsonServletAsync.class,"/json_async");
         context.addServlet(JsonServlet.class,"/json");
         context.addServlet(PlaintextServlet.class,"/plaintext");
