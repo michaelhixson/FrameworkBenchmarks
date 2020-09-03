@@ -2,7 +2,6 @@ package hello.handler;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.charset.StandardCharsets;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +23,7 @@ public class PlainTextHandler extends AbstractHandler
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
+        HelloWebServer.delayResponse();
         baseRequest.setHandled(true);
         baseRequest.getResponse().getHttpFields().add(contentType); 
         baseRequest.getResponse().getHttpOutput().sendContent(helloWorld.slice());

@@ -25,6 +25,7 @@ public class JsonHandler extends AbstractHandler
     @Override
     public void handle(String target, Request baseRequest, HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException
     {
+        HelloWebServer.delayResponse();
         baseRequest.setHandled(true);
         baseRequest.getResponse().getHttpFields().add(contentType);  
         Map<String,String> map = Collections.singletonMap("message","Hello, World!");        
